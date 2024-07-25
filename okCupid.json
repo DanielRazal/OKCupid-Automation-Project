@@ -1,0 +1,23 @@
+{
+    "email": {
+        "name": "your_email_name"
+    },
+    "password": {
+        "name": "your_password_name"
+    },
+    "next_button": {
+        "xpath": "//button[@class='login-actions-button' and @data-cy='login.submitButton']"
+    },
+    "send_code_button": {
+        "xpath": "//button[@class='login-actions-button']"
+    },
+    "intro_button": {
+        "xpath": "//*[@id='quickmatch-aria-tabpanel']/div/div/div[1]/div[2]/div/div[2]/div/div[1]/button"
+    },
+    "send_message_button": {
+        "xpath": "//*[@id='OkModal']/div[1]/div/div/div/div[3]/button"
+    },
+    "keep_browsing_button": {
+        "xpath": "//*[@id='OkModal']/div[1]/div/div/div/div/button"
+    }
+}
