@@ -7,10 +7,11 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 import time
 import json
-from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException, TimeoutException
+from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException
 from translate import Translator
 from datetime import datetime
 import pytz
+import os
 
 
 def webDriverWait(driver, by, xpath, timeout=10):
@@ -69,16 +70,16 @@ def change_text_by_time(driver,send_message_text,translation):
     israel_tz = pytz.timezone('Asia/Jerusalem')
     israel_time = datetime.now(israel_tz)
     
-    if 5 <= israel_time.hour < 12:
-        ActionChains(driver).move_to_element(send_message_text).click().send_keys(f"היי {translation} בוקר טוב, אשמח להכיר 🌹").perform()
-    elif 12 <= israel_time.hour < 17:
-        ActionChains(driver).move_to_element(send_message_text).click().send_keys(f"היי {translation} צהריים טוב, אשמח להכיר 🌹").perform()
-    elif 17 <= israel_time.hour < 24:
-        ActionChains(driver).move_to_element(send_message_text).click().send_keys(f"היי {translation} ערב טוב, אשמח להכיר 🌹").perform()
-    elif 1 <= israel_time.hour < 5:
-        ActionChains(driver).move_to_element(send_message_text).click().send_keys(f"היי {translation} לילה טוב, אשמח להכיר 🌹").perform()
-    else:
-        ActionChains(driver).move_to_element(send_message_text).click().send_keys(f"היי {translation} בוקר טוב, אשמח להכיר 🌹").perform()
+    # if 5 <= israel_time.hour < 12:
+    #     ActionChains(driver).move_to_element(send_message_text).click().send_keys(f"היי, את מאוד מוצאת חן בעיניי. אשמח להכיר אותך🌺").perform()
+    # elif 12 <= israel_time.hour < 17:
+    #     ActionChains(driver).move_to_element(send_message_text).click().send_keys(f"היי, את מאוד מוצאת חן בעיניי. אשמח להכיר אותך🌺").perform()
+    # elif 17 <= israel_time.hour < 24:
+    #     ActionChains(driver).move_to_element(send_message_text).click().send_keys(f"היי, את מאוד מוצאת חן בעיניי. אשמח להכיר אותך🌺").perform()
+    # elif 1 <= israel_time.hour < 5:
+    #     ActionChains(driver).move_to_element(send_message_text).click().send_keys(f"היי, את מאוד מוצאת חן בעיניי. אשמח להכיר אותך🌺").perform()
+    # else:
+    ActionChains(driver).move_to_element(send_message_text).click().send_keys(f"היי, את מאוד מוצאת חן בעיניי. אשמח להכיר אותך🌺").perform()
 
 
 def translate_name_for_hebrew(driver):
@@ -96,7 +97,7 @@ def test_send_messages_to_users(driver):
     send_message_button_xpath = okCupid['send_message_button']['xpath']
     keep_browsing_button_xpath = okCupid['keep_browsing_button']['xpath']
     send_message_button_id = "messenger-composer"
-    for i in range(200):
+    for i in range(10000):
         
         intro_button = webDriverWait(driver, By.XPATH, intro_button_xpath)
         if intro_button:
@@ -110,7 +111,7 @@ def test_send_messages_to_users(driver):
         if send_message_text:
             
             translation = translate_name_for_hebrew(driver)
-            time.sleep(5)
+            time.sleep(4)
             change_text_by_time(driver,send_message_text,translation)
             time.sleep(2)
 
@@ -130,20 +131,48 @@ def test_send_messages_to_users(driver):
             except (StaleElementReferenceException, NoSuchElementException) as e:
                 print(e)
 
-        time.sleep(8)
+        time.sleep(2)
 
         print(i)
     
     
+# if __name__ == '__main__':
+#     service = ChromeService(executable_path=ChromeDriverManager().install())
+#     driver = webdriver.Chrome(service=service)
+#     driver.get('https://www.okcupid.com/home')
+#     driver.maximize_window()
+#     # test_login(driver)
+#     # load_cookies(driver, "okCupid_cookies.json")
+#     # driver.refresh()
+#     # time.sleep(5)
+#     # test_send_messages_to_users(driver)
+#     time.sleep(10)
+#     driver.quit()
+
+
 if __name__ == '__main__':
-    service = ChromeService(executable_path=ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=service)
-    driver.get('https://www.okcupid.com/home')
-    driver.maximize_window()
-    # test_login(driver)
-    load_cookies(driver, "okCupid_cookies.json")
-    driver.refresh()
-    time.sleep(5)
-    test_send_messages_to_users(driver)
-    time.sleep(10)
-    driver.quit()
+    chrome_driver_path = ChromeDriverManager().install()
+    
+    # List the directory contents for debugging
+    driver_dir = os.path.dirname(chrome_driver_path)
+    print(f"Checking contents of directory: {driver_dir}")
+    print(f"Directory contents: {os.listdir(driver_dir)}")
+    
+    # Ensure the executable path is correct
+    executable_path = os.path.join(driver_dir, 'chromedriver.exe')
+    if not os.path.isfile(executable_path):
+        print(f"Error: Executable not found at {executable_path}")
+    else:
+        service = ChromeService(executable_path=executable_path)
+        print(f"Service executable path: {executable_path}")
+        
+        driver = webdriver.Chrome(service=service)
+        driver.get('https://www.okcupid.com/home')
+        driver.maximize_window()
+        load_cookies(driver, "okCupid_cookies.json")
+        driver.refresh()
+        time.sleep(5)
+        test_send_messages_to_users(driver)
+
+        time.sleep(10)
+        driver.quit()

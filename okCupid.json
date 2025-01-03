@@ -1,9 +1,9 @@
 {
     "email": {
-        "name": "your_email_name"
+        "name": "mr.danielrazal@gmail.com"
     },
     "password": {
-        "name": "your_password_name"
+        "name": "sbhsbhsbh1"
     },
     "next_button": {
         "xpath": "//button[@class='login-actions-button' and @data-cy='login.submitButton']"
